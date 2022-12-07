@@ -66,7 +66,8 @@ export const Detail = () => {
         title: value,
       });
       dispatch(modify({ id, value }));
-      window.location.href = "/";
+      setValue("");
+      alert("수정 완료되었습니다.");
     } catch (error) {
       window.location.href = `/error/${error.code}`;
     }
