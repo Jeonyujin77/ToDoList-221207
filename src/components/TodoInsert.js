@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { add } from "../redux/todoSlice";
-import axios from "axios";
 import styled from "styled-components";
+import { __addTodo } from "../lib/api";
 
 const Form = styled.form`
   text-align: center;
@@ -39,14 +39,17 @@ const TodoInsert = () => {
       done: false,
     };
 
-    try {
-      await axios.post("http://localhost:3001/todos", todo);
-      dispatch(add(todo));
-    } catch (error) {
-      window.location.href = `/error/${error.code}`;
-    } finally {
-      setTitle("");
-    }
+    // api 요청
+    dispatch(__addTodo(todo))
+      .then((response) => {
+        // api 응답이 정상이면 화면의 상태를 업데이트 함
+        const { id, title, done } = response.payload;
+        dispatch(add({ id, title, done }));
+        setTitle("");
+      })
+      .catch((error) => {
+        throw error;
+      });
   };
 
   return (

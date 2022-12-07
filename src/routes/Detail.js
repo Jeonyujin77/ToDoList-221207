@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { modify } from "../redux/todoSlice";
 import axios from "axios";
 import styled from "styled-components";
+import { __modifyTodo } from "../lib/api";
 
 const Box = styled.form`
   width: 400px;
@@ -61,16 +62,13 @@ export const Detail = () => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    try {
-      await axios.patch(`http://localhost:3001/todos/${id}`, {
-        title: value,
-      });
-      dispatch(modify({ id, value }));
+
+    dispatch(__modifyTodo({ id, title: value })).then((response) => {
+      const { id, title } = response.payload;
+      dispatch(modify({ id, title }));
       setValue("");
       alert("수정 완료되었습니다.");
-    } catch (error) {
-      window.location.href = `/error/${error.code}`;
-    }
+    });
   };
 
   return (

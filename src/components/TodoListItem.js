@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { remove, toggle } from "../redux/todoSlice";
-import axios from "axios";
 import styled from "styled-components";
+import { __removeTodo, __toggleTodo } from "../lib/api";
 
 const Item = styled.li`
   list-style: none;
@@ -35,24 +35,15 @@ const TodoListItem = ({ todo }) => {
   const { id, title, done } = todo;
 
   const onRemove = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3001/todos/${id}`);
+    dispatch(__removeTodo(id)).then((response) => {
       dispatch(remove(id));
-    } catch (error) {
-      window.location.href = `/error/${error.code}`;
-    }
+    });
   };
 
   const onToggle = async (id) => {
-    try {
-      await axios.patch(`http://localhost:3001/todos/${id}`, {
-        ...todo,
-        done: !todo.done,
-      });
+    dispatch(__toggleTodo(todo)).then((response) => {
       dispatch(toggle(id));
-    } catch (error) {
-      window.location.href = `/error/${error.code}`;
-    }
+    });
   };
 
   return (
